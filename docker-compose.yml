@@ -1,0 +1,30 @@
+version: "3.3"
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/Nginx.Dockerfile
+    ports: 
+      - 8080:80
+    links:
+      - fpm
+    volumes: 
+      - ./:/var/www/html
+     
+  fpm:
+    build:
+      context: .
+      dockerfile: docker/Fpm.Dockerfile
+    volumes: 
+      - ./:/var/www/html
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
+    links: 
+      - mysql
+  mysql:
+    image: mysql:5.7
+    command: --max_allowed_packet=32505856
+    env_file:
+      - .env
+
+          
